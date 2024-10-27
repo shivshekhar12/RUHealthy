@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUHealthy</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="icon" type="x-icon" href="favicon.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+ 
+        /* Body Styling */
+        body {
+            font-family: 'Lexend', sans-serif; /* Applied Lexend font */
+            background-color: #690000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: #f2f3f4;
+        }
+        h1 {
+            font-size: 2.8rem;
+            font-weight: bold;
+            margin-bottom: 40px;
+            text-align: center;
+            color: #f2f3f4;
+            border-bottom: 2px solid #f2f3f4;
+            padding-bottom: 10px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .main-container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            max-width: 1200px;
+            width: 100%;
+            gap: 40px;
+        }
+        .container {
+            background-color: #F0F2EF;
+            border-radius: 8px;
+            padding: 35px;
+            width: 380px;
+            height: 560px;
+            text-align: left;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        h2 {
+            font-size: 2rem;
+            color: #000;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 20px;
+        }  
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #000;
+            font-size: 1.1rem;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 1.1rem;
+            background-color: #F0F2EF;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus {
+            border-color: #0f77df;
+            outline: none;
+        }
+
+        select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        #nutrition-info {
+            padding: 25px;
+            border-radius: 8px;
+            width: 380px;
+            height: 560px;
+            text-align: left;
+            background-color: #F0F2EF;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        #nutrition-info h3 {
+            font-size: 1.2rem;
+            color: #000;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #nutrition-details p {
+            margin: 10px 0;
+            font-size: 1.0rem;
+            color: #000;
+        }
+
+        #nutrition-details span {
+            font-weight: bold;
+        }
+        .calorie-ring {
+            width: 250px;
+            height: 250px;
+            position: relative;
+            border-radius: 50%;
+            background: #f2f3f4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        #addToPlateBtn {
+            background-color:#f2f3f4;
+            color: #000;
+            border: 2px solid transparent;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        #addToPlateBtn:hover {
+            background-color: #f2f3f4;
+            color: #000;
+            border-color: #000;
+        }
+        .selected-foods {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+            color: #000;
+        }
+
+        .selected-food-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #F0F2EF;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .delete-btn {
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>RUHealthy</h1>
+    <div class="main-container">
+        <!-- Selection Container -->
+        <div class="container">
+            <h2>Select Options</h2>
+            <!-- Campus selection -->
+            <label for="campus">Select Campus:</label>
+            <select id="campus" name="campus">
+                <option value="" disabled selected>Select a campus</option>
+                {% for campus in campuses %}
+                    <option value="{{ campus['Campus'] }}">{{ campus['Campus'] }}</option>
+                {% endfor %}
+            </select>
+
+            <!-- Day selection -->
+            <label for="day">Select Day:</label>
+            <select id="day" name="day">
+                <option value="" disabled selected>Select a day</option>
+            </select>
+
+            <!-- Meal selection -->
+            <label for="meal">Select Meal:</label>
+            <select id="meal" name="meal">
+                <option value="" disabled selected>Select a meal</option>
+            </select>
+
+            <!-- Food item selection -->
+            <label for="food">Select Food Item:</label>
+            <select id="food" name="food">
+                <option value="" disabled selected>Select a food item</option>
+            </select>
+        </div>
+
+        <!-- Calorie Ring Section -->
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <!-- Add to Plate Button -->
+            <button id="addToPlateBtn">Add to Plate</button>
+            
+            <!-- Calorie Ring Component -->
+            <div class="calorie-ring" id="calorieRing">
+                <span id="calorieText">0 / 2500 kcal</span>
+            </div>
+
+            <!-- Selected Foods List -->
+            <ul class="selected-foods" id="selectedFoodsList">
+                <!-- Items will be added here dynamically -->
+            </ul>
+        </div>
+
+        <!-- Nutritional Information Container -->
+        <div class="container" id="nutrition-info">
+            <h2>Nutritional Information</h2>
+            <div id="nutrition-details">
+                <p>Select options above to view nutritional information.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let dailyCalories = 0;
+    let selectedCalories = 0;
+    const calorieLimit = 2500;
+
+    function animateCalorieRing(newCalories) {
+        const oldPercentage = (dailyCalories / calorieLimit) * 100;
+        dailyCalories = newCalories;
+        const newPercentage = Math.min((dailyCalories / calorieLimit) * 100, 100);
+
+        $({ percentage: oldPercentage }).animate({ percentage: newPercentage }, {
+            duration: 1000,
+            step: function(percentage) {
+                document.getElementById('calorieRing').style.background = `conic-gradient(#58dc4c ${percentage}%, #F0F2EF ${percentage}%)`;
+                document.getElementById('calorieText').innerText = `${Math.round(dailyCalories)} / ${calorieLimit} kcal`;
+            }
+        });
+    }
+
+    // Event listener for the "Add to Plate" button
+    document.getElementById('addToPlateBtn').addEventListener('click', function() {
+        if (selectedCalories > 0) {
+            const foodName = $('#food option:selected').text();
+            const foodItem = { name: foodName, calories: selectedCalories };
+
+            // Add item to list and update calorie count
+            $('#selectedFoodsList').append(`
+                <li class="selected-food-item">
+                    ${foodName}<span class="delete-btn" data-calories="${selectedCalories}">x</span>
+                </li>
+            `);
+            animateCalorieRing(dailyCalories + selectedCalories);
+        }
+    });
+
+    // Handle deletion of food items and update calorie count
+    $(document).on('click', '.delete-btn', function() {
+        const itemCalories = parseFloat($(this).data('calories'));
+        animateCalorieRing(dailyCalories - itemCalories);
+        $(this).parent().remove();
+    });
+
+    // Fetch days based on campus selection
+    $('#campus').change(function() {
+        var campus = $(this).val();
+        $('#day').html('<option value="" disabled selected>Select a day</option>');
+        $('#meal').html('<option value="" disabled selected>Select a meal</option>');
+        $('#food').html('<option value="" disabled selected>Select a food item</option>');
+        if (campus) {
+            $.post('/get_days', {campus: campus}, function(days) {
+                $.each(days, function(index, day) {
+                    $('#day').append('<option value="' + day + '">' + day + '</option>');
+                });
+            });
+        }
+    });
+
+    // Fetch meals based on day selection
+    $('#day').change(function() {
+        var campus = $('#campus').val();
+        var day = $(this).val();
+        $('#meal').html('<option value="" disabled selected>Select a meal</option>');
+        $('#food').html('<option value="" disabled selected>Select a food item</option>');
+        if (day) {
+            $.post('/get_meals', {campus: campus, day: day}, function(meals) {
+                $.each(meals, function(index, meal) {
+                    $('#meal').append('<option value="' + meal + '">' + meal + '</option>');
+                });
+            });
+        }
+    });
+
+    // Fetch food items based on meal selection
+    $('#meal').change(function() {
+        var campus = $('#campus').val();
+        var day = $('#day').val();
+        var meal = $(this).val();
+        $('#food').html('<option value="" disabled selected>Select a food item</option>');
+        if (meal) {
+            $.post('/get_food_items', {campus: campus, day: day, meal: meal}, function(foods) {
+                $.each(foods, function(index, food) {
+                    $('#food').append('<option value="' + food + '">' + food + '</option>');
+                });
+            });
+        }
+    });
+
+    // Fetch nutrition information based on food item selection
+    $('#food').change(async function() {
+        var campus = $('#campus').val();
+        var day = $('#day').val();
+        var meal = $('#meal').val();
+        var food_name = $(this).val();
+        if (food_name) {
+            const response = await $.post('/get_nutrition', { campus, day, meal, food_name });
+            $('#nutrition-details').empty();
+            
+            if ($.isEmptyObject(response)) {
+                $('#nutrition-details').append('<p>No nutritional data available.</p>');
+                selectedCalories = 0;
+            } else {
+                $('#nutrition-details').append(`<h3>${food_name}</h3>`);
+                $('#nutrition-details').append(`<p><span>Serving Size:</span> ${response.ServingSizeNumber|| 'N/A'}</p>`);
+                $('#nutrition-details').append(`<p><span>Calories:</span> ${response.Calories + " g"|| 'N/A'}</p>`);
+                $('#nutrition-details').append(`<p><span>Cholesterol:</span> ${response.Cholesterol + " g"|| 'N/A'}</p>`);
+                $('#nutrition-details').append(`<p><span>Dietary Fiber:</span> ${response.DietaryFiber + " g"|| 'N/A'}</p>`);
+                $('#nutrition-details').append(`<p><span>Protein:</span> ${response.Protein + " g"|| 'N/A'}</p>`);
+                $('#nutrition-details').append(`<p><span>Saturated Fat:</span> ${response.SaturatedFat + " g"|| 'N/A'}</p>`);
+                $('#nutrition-details').append(`<p><span>Sodium:</span> ${response.Sodium + " g"|| 'N/A'}</p>`);
+                $('#nutrition-details').append(`<p><span>Sugars:</span> ${response.Sugars + " g"|| 'N/A'}</p>`);
+                $('#nutrition-details').append(`<p><span>Carbohydrates:</span> ${response.TotalCarbs + " g"|| 'N/A'}</p>`);
+                $('#nutrition-details').append(`<p><span>Trans Fat:</span> ${response.TransFat + " g"|| 'N/A'}</p>`);
+                $('#nutrition-details').append(`<p><span>Total Fat:</span> ${response.TotalFat + " g"|| 'N/A'}</p>`);
+                
+                // Set selected calories to the food item's calories
+                selectedCalories = parseFloat(response.Calories || 0);
+            }
+        }
+    });
+    </script>
+</body>
+</html>
